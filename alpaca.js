@@ -12482,6 +12482,12 @@ var equiv = function () {
                     {
                         if (this.determineAllDependenciesValid(propertyId))
                         {
+                            // return dataAlias back
+                            var options = this.children[i].options;
+                            if (options &&
+                                options.dataAlias) {
+                                propertyId = options.dataAlias;
+                            }
                             o[propertyId] = fieldValue;
                         }
                     }
@@ -12791,6 +12797,22 @@ var equiv = function () {
                     }
 
                     _this.renderValidationState();
+
+                    // apply dataAlias for each child on initial load
+                    for (i = 0; i < len; i++ )
+                    {
+                        propertyId = propertyOrder[i];
+                        // check if properties dependencies are valid
+                        var valid = _this.determineAllDependenciesValid(propertyId);
+                        if (valid) {
+                            var child = _this.childrenByPropertyId[propertyId];
+                            if (child.options &&
+                                child.options.dataAlias) {
+                                var itemData = _this.data[child.options.dataAlias];
+                                child.setValue(itemData);
+                            }
+                        }
+                    }
                 };
 
                 // each property in the object can have a different schema and options so we need to process
