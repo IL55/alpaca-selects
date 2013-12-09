@@ -1,4 +1,4 @@
-/*!
+ /*!
 Alpaca Version 1.1.1
 
 Copyright 2013 Gitana Software, Inc.
@@ -12799,7 +12799,7 @@ var equiv = function () {
                     _this.renderValidationState();
 
                     // apply dataAlias for each child on initial load
-                    for (i = 0; i < len; i++ )
+                    for (i = 0; i < properties.length; i++ )
                     {
                         propertyId = propertyOrder[i];
                         // check if properties dependencies are valid
