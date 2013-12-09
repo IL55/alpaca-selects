@@ -12801,7 +12801,7 @@ var equiv = function () {
                     // apply dataAlias for each child on initial load
                     for (i = 0; i < properties.length; i++ )
                     {
-                        propertyId = propertyOrder[i];
+                        var propertyId = properties[i];
                         // check if properties dependencies are valid
                         var valid = _this.determineAllDependenciesValid(propertyId);
                         if (valid) {
