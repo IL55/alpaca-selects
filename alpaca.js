@@ -12799,9 +12799,8 @@ var equiv = function () {
                     _this.renderValidationState();
 
                     // apply dataAlias for each child on initial load
-                    for (i = 0; i < properties.length; i++ )
+                    for (var propertyId in properties)
                     {
-                        var propertyId = properties[i];
                         // check if properties dependencies are valid
                         var valid = _this.determineAllDependenciesValid(propertyId);
                         if (valid) {
