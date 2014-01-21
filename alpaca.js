@@ -3825,7 +3825,35 @@ var equiv = function () {
         return $(el).attr(name);
     };
 
-    Alpaca.loadRefSchemaOptions = function(topField, referenceId, callback)
+    // try to reach object by path,
+    // i.e. if object has next structure:
+    // obj = {
+    //    leaf1:
+    //        {
+    //            leaf2: {}
+    //        }
+    //    }
+    // }
+    // getObjectByPath(obj, 'leaf1/leaf2')
+    // returns obj.leaf1.leaf2
+    Alpaca.getObjectByPath = function(obj, path) {
+        if (path.indexOf('/') > -1) {
+            var retObj = obj;
+            var fields = path.split('/');
+            for (var i = 0; i < fields.length; i++) {
+                var fieldName = fields[i];
+                retObj = retObj[fieldName];
+                if (!retObj) {
+                    return; // path not found
+                }
+            }
+            return retObj;
+        } else {
+            return obj[path];
+        }
+    }
+
+    Alpaca.loadRefSchemaOptions = function(topField, referenceId, options, callback)
     {
         if (referenceId.indexOf("#/definitions/") > -1)
         {
@@ -3834,13 +3862,16 @@ var equiv = function () {
             var defSchema = null;
             if (topField.schema.definitions)
             {
-                defSchema = topField.schema.definitions[defId];
+                defSchema = Alpaca.getObjectByPath(topField.schema.definitions, defId);
             }
 
             var defOptions = null;
             if (topField.options.definitions)
             {
-                defOptions = topField.options.definitions[defId];
+                defOptions = Alpaca.getObjectByPath(topField.options.definitions, defId);
+            } else if (!Alpaca.isEmpty(options)) {
+                // use base options, if options.definitions is not defined
+                defOptions = options;
             }
 
             callback(defSchema, defOptions);
@@ -11996,7 +12027,7 @@ var equiv = function () {
                     fieldChain.push(topField);
                 }
 
-                Alpaca.loadRefSchemaOptions(topField, referenceId, function(itemSchema, itemOptions) {
+                Alpaca.loadRefSchemaOptions(topField, referenceId, itemOptions, function(itemSchema, itemOptions) {
 
                     // walk the field chain to see if we have any circularity
                     var refCount = 0;
@@ -12604,7 +12635,7 @@ var equiv = function () {
                         fieldChain.push(topField);
                     }
 
-                    Alpaca.loadRefSchemaOptions(topField, referenceId, function(propertySchema, propertyOptions) {
+                    Alpaca.loadRefSchemaOptions(topField, referenceId, propertyOptions, function(propertySchema, propertyOptions) {
 
                         // walk the field chain to see if we have any circularity
                         var refCount = 0;
