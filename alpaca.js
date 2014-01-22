@@ -5915,7 +5915,7 @@ var equiv = function () {
 
             return {
                 "templateDescriptor" : templateDescriptor,
-                "bindings" : this.getViewParam(["layout","bindings"], true)
+                "bindings" : this.getViewParam(["layout","bindings"], false)
             };
         },
 
@@ -8441,8 +8441,8 @@ var equiv = function () {
                             var bindings = this.view.getLayout().bindings;
                             if (bindings) {
                                 var binding = bindings[propertyId];
-                                if (binding && $('#' + binding, appendToContainer).length > 0) {
-                                    appendToContainer = $('#' + binding, appendToContainer);
+                                if (binding && $('#' + binding).length > 0) {
+                                    appendToContainer = $('#' + binding);
                                 }
                             }
                             containerElem.appendTo(appendToContainer);
