@@ -8440,12 +8440,32 @@ var equiv = function () {
 
                             var bindings = this.view.getLayout().bindings;
                             if (bindings) {
+                                var ignoreElement = false;
                                 var binding = bindings[propertyId];
-                                if (binding && $('#' + binding).length > 0) {
-                                    appendToContainer = $('#' + binding);
+                                if (binding) {
+                                    var app = $('#' + binding, appendToContainer);
+                                    if (app.length > 0) {
+                                        appendToContainer = app;
+                                    } else {
+                                        // try to find in parent for complex objects
+                                        app = $('#' + binding, this.parent.outerEl);
+                                        if (app.length > 0) {
+                                            appendToContainer = app;
+                                        } else {
+                                            ignoreElement = true;
+                                        }
+                                    }
+                                } else {
+                                    ignoreElement = true;
                                 }
+
+                                if (!ignoreElement) {
+                                    containerElem.appendTo(appendToContainer);
+                                }
+                            } else {
+                                containerElem.appendTo(appendToContainer);
                             }
-                            containerElem.appendTo(appendToContainer);
+
                         }
                     }
                     return containerElem;
